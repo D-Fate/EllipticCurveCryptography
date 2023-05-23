@@ -13,15 +13,13 @@ class FieldElement(object):
 
     @staticmethod
     def _extended_euclidian_algorithm(a: int, b: int) -> tuple:
-        """ Extended euclidian algorithm. Returns the gcd of (a, b) and
-            the Bezout-coefficients.
-        """
+        """ Возвращает НОД и коэффициенты Безу. """
         s, t, u, v = 1, 0, 0, 1
         while b != 0:
             q, r = a // b, a % b
             next_u, next_v = s, t
-            s = u - (q * s)
-            t = v - (q * t)
+            s = u - q * s
+            t = v - q * t
             a, b = b, r
             u, v = next_u, next_v
         return a, u, v
@@ -35,15 +33,12 @@ class FieldElement(object):
 
     @property
     def is_qr(self) -> bool:
-        """ Returns if the number is a quadratic residue according to Euler's
-            criterion.
-        """
+        """ True, если квадратичный вычет по критерию Эйлера, иначе False. """
         return not self.is_qnr
 
     @property
     def is_qnr(self) -> bool:
-        """ Returns if the number is a quadratic non-residue according to
-            Euler's criterion.
+        """ True, если не квадратичный невычет по критерию Эйлера, иначе False.
         """
         if self._qnr is None:
             self._qnr = int(self ** ((self._modulus - 1) // 2)) != 1
@@ -51,9 +46,9 @@ class FieldElement(object):
 
     @property
     def legrende_symbol(self) -> int:
-        """ Returns the Legrende symbol of the field element, i.e.
-            0 if the element is 0 mod p, 1 if it is a quadratic residue mod p or
-            -1 if it is a quadratic non-residue mod p.
+        """ 0, если value = 0 по модулю modulus;
+            1, если квадратичный вычет;
+            -1, если квадратичный невычет.
         """
         if self == 0:
             return 0
@@ -62,10 +57,6 @@ class FieldElement(object):
         return -1
 
     def _tonelli_shanks_sqrt(self):
-        """ Performs the Tonelli-Shanks algorithm to determine
-            the square root on an element. Note that the algorithm only works
-            if the value it is performed on is a quadratic residue mod p.
-        """
         q = self._modulus - 1
         s = 0
         while (q % 2) == 0:
@@ -96,9 +87,6 @@ class FieldElement(object):
 
         return r
 
-    def sqr(self):
-        return self * self
-
     def sqrt(self):
         """ Returns the square root of the value or None if the value is a
             quadratic non-residue mod p.
@@ -116,18 +104,6 @@ class FieldElement(object):
             return root, -root
         return -root, root
 
-    def quartic_root(self):
-        """ Returns the quartic root of the value or None if no such value
-            explicitly exists mod p.
-        """
-        root = self.sqrt()
-        if root is not None:
-            r1 = root[0].sqrt() or list()
-            r2 = root[1].sqrt() or list()
-            for candidate in list(r1) + list(r2):
-                if (candidate ** 4) == self:
-                    return candidate
-
     def __checktype(self, value):
         if isinstance(value, int):
             return value
@@ -139,28 +115,6 @@ class FieldElement(object):
                     'Cannot perform meaningful arithmetic operations '
                     'on field elements in different fields.'
                 )
-
-    def sigint(self):
-        """ Returns a signed integer if the negative value is less than 10
-            decimal digits and the absolute negated value is smaller than the
-            absolute positive value.
-        """
-        neg = abs(int(-self))
-        if (neg < int(self)) and (neg < 1000000000):
-            return -neg
-        return int(self)
-
-    @classmethod
-    def any_qnr(cls, modulus):
-        """ Returns any quadratic non-residue in F(modulus). """
-        for i in range(1000):
-            candidate = cls(random.randint(2, modulus - 1), modulus)
-            if candidate.is_qnr:
-                return candidate
-        raise Exception(
-            f'Could not find a QNR in F_{modulus} with '
-            'a reasonable amount of tries.'
-        )
 
     def __int__(self):
         return self._value

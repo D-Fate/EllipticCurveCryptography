@@ -3,12 +3,6 @@ from ECCBackend.keys.public_key_operations import ECDSAVerify, \
 
 
 class ECPublicKey(ECDSAVerify, ECDSAExploitReusedNonce, ECIESEncrypt):
-    """ Elliptic curve public key abstraction. An EC public key is just a point
-        on the curve, which is why the constructor only takes this (public)
-        point as a parameter. The public key abstraction allows this point to be
-        used in various meaningful purposes (ECDSA signature verification, etc).
-    """
-
     def __init__(self, point):
         self._point = point
 

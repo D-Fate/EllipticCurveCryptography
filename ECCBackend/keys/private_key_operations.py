@@ -12,57 +12,48 @@ class ECDSASign(object):
     )
 
     def ecdsa_sign_hash(self, message_digest: bytes,
-                        k: int =None, digestname=None):
-        """ Signs a given messagedigest, given as bytes, using ECDSA.
-            Optionally a nonce k can be supplied which should usually be
-            unqiuely chosen for every ECDSA signature. This way it is possible
-            to deliberately create broken signatures which can be exploited
-            later on. If k is not supplied, it is randomly chosen. If a
-            digestname is supplied the name of this digest eventually ends up
-            in the ECDSASignature object.
+                        digest_name: str = None, nonce: int = None):
+        """ Подписывает дайджест сообщения message_digest, используя ECDSA.
+            Также есть возможность ввести nonce, чтобы избежать эксплойта.
+            Если nonce не введено, то оно выбирается случайно. Если
+            введено digest_name, то оно дописывается в конец объекта подписи.
         """
-        # Convert message digest to integer value
+        # Дайджест сообщения -> целочисленное значение
         e = tools.ecdsa_msgdigest_to_int(message_digest, self.curve.order)
 
-        # Select a random integer (if None is supplied!)
-        if k is None:
-            k = rand_int_between(1, self.curve.order - 1)
+        if nonce is None:
+            nonce = rand_int_between(1, self.curve.order - 1)
 
         # r = (k * G)_x mod n
-        Rmodp = k * self.curve.gen
-        r = int(Rmodp.x) % self.curve.order
+        r_mod_p = nonce * self.curve.gen
+        r = int(r_mod_p.x) % self.curve.order
         assert (r != 0)
 
-        s = FieldElement(e + self.scalar * r, self.curve.order) // k
+        s = FieldElement(e + self.scalar * r, self.curve.order) // nonce
 
-        return self.ECDSASignature(r=r, s=int(s), hashalg=digestname)
+        return self.ECDSASignature(r=r, s=int(s), hashalg=digest_name)
 
-    def ecdsa_sign(self, message: bytes, digestname: str, k=None):
-        """ Signs a given message with the digest that is given as a string.
-            Optionally a nonce k can be supplied which should usually be
-            unqiuely chosen for every ECDSA signature. This way it is possible
-            to deliberately create broken signatures which can be exploited
-            later on. If k is not supplied, it is randomly chosen.
+    def ecdsa_sign(self, message: bytes, digest_name: str, nonce=None):
+        """ Подписывает сообщение message, используя ECDSA. Также есть
+            возможность ввести nonce, чтобы избежать эксплойта. Если nonce не
+            введено, то оно выбирается случайно. Если введено digest_name, то
+            оно дописывается в конец объекта подписи.
         """
-        digest_fnc = hashlib.new(digestname)
-        digest_fnc.update(message)
-        message_digest = digest_fnc.digest()
-        return self.ecdsa_sign_hash(message_digest, k=k, digestname=digestname)
+        digest_func = hashlib.new(digest_name)
+        digest_func.update(message)
+        message_digest = digest_func.digest()
+        return self.ecdsa_sign_hash(
+            message_digest, digest_name=digest_name, nonce=nonce
+        )
 
 
 class ECIESDecrypt(object):
-    def ecies_decrypt(self, R):
-        """ Takes the transmitted point R and reconstructs the shared secret
-            point S using the private key.
-        """
-        # Transmitted R is given, restore the symmetric key S
-        return self._scalar * R
+    def ecies_decrypt(self, r):
+        # R передан, восстанавливаем симметричный ключ S
+        return self._scalar * r
 
 
 class ECDH(object):
     def ecdh_compute(self, peer_pubkey):
-        """ Compute the shared secret point using our own private key and the
-            public key of our peer.
-        """
         return self.scalar * peer_pubkey.point
 

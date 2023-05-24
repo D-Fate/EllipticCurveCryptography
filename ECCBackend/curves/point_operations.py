@@ -1,4 +1,4 @@
-class NaiveOrderCalculation(object):
+class NaiveOrderCalculation:
     def naive_order_calculation(self):
         current_point = self
         order = 1

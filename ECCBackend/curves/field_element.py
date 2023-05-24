@@ -1,7 +1,7 @@
 import random
 
 
-class FieldElement(object):
+class FieldElement:
     def __init__(self, value: int, modulus: int):
         self._value = value % modulus
         self._modulus = modulus

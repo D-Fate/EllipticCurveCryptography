@@ -7,7 +7,7 @@ class DuplicateCurveException(Exception):
 
 
 @singleton
-class CurveDB(object):
+class CurveDB:
     def __init__(self):
         self._entries = {}
         self._primary_names = set()

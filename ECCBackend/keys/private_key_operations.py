@@ -6,7 +6,7 @@ from ECCBackend.curves.field_element import FieldElement
 from ECCBackend.secure_random import rand_int_between
 
 
-class ECDSASign(object):
+class ECDSASign:
     ECDSASignature = collections.namedtuple(
         'ECDSASignature', ['hashalg', 'r', 's']
     )

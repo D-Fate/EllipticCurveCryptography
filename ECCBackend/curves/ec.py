@@ -1,7 +1,7 @@
 from ECCBackend.curves.point import Point
 
 
-class EllipticCurve(object):
+class EllipticCurve:
     def __init__(self, modulus: int, order: int = None, cofactor: int = None,
                  gen_x: int = None, gen_y: int = None, **kwargs):
         assert ((gen_x is None) == (gen_y is None))

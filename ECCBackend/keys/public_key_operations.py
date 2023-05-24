@@ -5,7 +5,7 @@ from ECCBackend.curves.field_element import FieldElement
 from ECCBackend.secure_random import rand_int_between
 
 
-class ECDSAExploitReusedNonce(object):
+class ECDSAExploitReusedNonce:
     def ecdsa_exploit_reused_nonce(self, msg1: bytes, sig1, msg2: bytes, sig2):
         """ Даны два разных сообщения msg1 и msg2 и соответствующие им
             подписи sig1, sig2, попытаться вычислить приватный ключ,
@@ -41,7 +41,7 @@ class ECDSAExploitReusedNonce(object):
         return {'nonce': nonce, 'privatekey': private}
 
 
-class ECDSAVerify(object):
+class ECDSAVerify:
     def ecdsa_verify_hash(self, message_digest: bytes, signature):
         assert (0 < signature.r < self.curve.order)
         assert (0 < signature.s < self.curve.order)
@@ -65,7 +65,7 @@ class ECDSAVerify(object):
         return self.ecdsa_verify_hash(message_digest, signature)
 
 
-class ECIESEncrypt(object):
+class ECIESEncrypt:
     def ecies_encrypt(self, r: int = None):
         """ Генерирует общий секрет для симметричного шифрования данных,
             которые может прочитать только владелец соответствующего закрытого

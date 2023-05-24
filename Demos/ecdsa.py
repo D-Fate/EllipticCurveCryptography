@@ -31,7 +31,6 @@ def main():
     verify_modified = private_key.pubkey.ecdsa_verify(
         modified_message, signature
     )
-
     print(f'Оригинальное сообщение: {verify_original} (ожидается Истина)')
     print(f'Модифицированное сообщение: {verify_modified} (ожидается Ложь)')
 

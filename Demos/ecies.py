@@ -7,6 +7,11 @@ from cryptography.hazmat.primitives.ciphers import Cipher, algorithms, modes
 BRAINPOOLP192R1 = get_curve('brainpoolP192r1')
 
 
+def padding(msg: bytes, block_size: int) -> bytes:
+    print(len(msg + b'\x00' * (block_size - len(msg) // block_size)))
+    return msg + b'\x00' * (block_size - len(msg) // block_size)
+
+
 def get_kdf(length):
     return X963KDF(algorithm=hashes.SHA256(), length=length, sharedinfo=None)
 
@@ -66,7 +71,7 @@ def ecies_decrypt(recipient_private_key, r, ciphertext, tag):
 
 
 def main():
-    message = input('Введите сообщение:\n>> ').encode('utf-8')
+    message = padding(input('Введите сообщение:\n>> ').encode('utf-8'), 8)
 
     private_key = ECPrivateKey.generate(BRAINPOOLP192R1)
     public_key = private_key.pubkey

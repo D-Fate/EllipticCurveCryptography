@@ -28,10 +28,12 @@ def main():
 
     print('Проверка электронной подписи:')
     verify_original = private_key.pubkey.ecdsa_verify(message, signature)
-    verify_modified = private_key.pubkey.ecdsa_verify(modified_message,
-                                                      signature)
+    verify_modified = private_key.pubkey.ecdsa_verify(
+        modified_message, signature
+    )
+
     print(f'Оригинальное сообщение: {verify_original} (ожидается Истина)')
-    print(f'Модифицированое сообщение: {verify_modified} (ожидается Ложь)')
+    print(f'Модифицированное сообщение: {verify_modified} (ожидается Ложь)')
 
     print('Подпишем теперь данные сообщения с одинаковыми nonce:')
     signature1 = private_key.ecdsa_sign(message, 'sha1', nonce=123456)
@@ -45,9 +47,8 @@ def main():
         modified_message, signature2
     )
 
-    print("Восстановленный nonce:", int(recovered['nonce']))
-    print(
-        "Восстановленный закрытый ключ: 0x%x" % (int(recovered['privatekey'])))
+    print('Восстановленный nonce:', int(recovered['nonce']))
+    print('Восстановленный закрытый ключ: 0x%x' % int(recovered['privatekey']))
 
 
 if __name__ == '__main__':

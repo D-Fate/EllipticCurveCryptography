@@ -14,7 +14,7 @@ class ECDSASign:
     def ecdsa_sign_hash(self, message_digest: bytes,
                         digest_name: str = None, nonce: int = None):
         """ Подписывает дайджест сообщения message_digest, используя ECDSA.
-            Также есть возможность ввести nonce, чтобы избежать эксплойта.
+            Также есть возможность ввести nonce, чтобы избежать эксплойт.
             Если nonce не введено, то оно выбирается случайно. Если
             введено digest_name, то оно дописывается в конец объекта подписи.
         """

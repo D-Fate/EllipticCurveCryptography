@@ -1,8 +1,3 @@
-import ECCBackend.tools as tools
-from ECCBackend.curves.field_element import FieldElement
-from ECCBackend.exceptions import UnsupportedPointFormatException
-
-
 class NaiveOrderCalculation(object):
     def naive_order_calculation(self):
         current_point = self

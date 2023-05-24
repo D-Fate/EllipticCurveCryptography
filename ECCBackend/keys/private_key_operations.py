@@ -19,7 +19,7 @@ class ECDSASign(object):
             введено digest_name, то оно дописывается в конец объекта подписи.
         """
         # Дайджест сообщения -> целочисленное значение
-        e = tools.ecdsa_msgdigest_to_int(message_digest, self.curve.order)
+        e = tools.ecdsa_msg_digest_to_int(message_digest, self.curve.order)
 
         if nonce is None:
             nonce = rand_int_between(1, self.curve.order - 1)

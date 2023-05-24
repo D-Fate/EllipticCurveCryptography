@@ -1,6 +1,9 @@
 from ECCBackend.curves.weierstrass_curve import WeierstrassCurve
-from ECCBackend.exceptions import DuplicateCurveException
 from ECCData.singleton import singleton
+
+
+class DuplicateCurveException(Exception):
+    pass
 
 
 @singleton

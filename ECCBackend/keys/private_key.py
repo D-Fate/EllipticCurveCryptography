@@ -28,7 +28,7 @@ class ECPrivateKey(ECDSASign, ECIESDecrypt, ECDH):
         return ECPrivateKey(scalar, curve)
 
     def __str__(self):
-        return 'PrivateKey<d = 0x%x>' % self.scalar
+        return '0x%x' % self.scalar
 
 
 def generate(curve):

@@ -1,7 +1,7 @@
 from ECCBackend.keys.private_key import ECPrivateKey
 from ECCData.preset_curves import get_curve
 
-curve = get_curve('secp521r1')
+SECP521R1 = get_curve('secp521r1')
 
 
 def msg_to_point(curve, msg, msg_width_bits):
@@ -12,40 +12,49 @@ def msg_to_point(curve, msg, msg_width_bits):
         if point:
             point = point[0]
             break
-    return i + 1, point
+    return point
 
 
-def elgamal_encrypt(recipient_pubkey, msg, msg_width_bits):
+def elgamal_encrypt(recipient_public_key, msg, msg_width_bits, curve):
     k = ECPrivateKey.generate(curve)
-    C1 = k.pubkey.point
-    C2 = k.scalar * recipient_pubkey.point
-    (trials, P_m) = msg_to_point(curve, msg, msg_width_bits=msg_width_bits)
-    ciphertext = (C1, C2 + P_m)
+    c1 = k.pubkey.point
+    c2 = k.scalar * recipient_public_key.point
+    p_m = msg_to_point(curve, msg, msg_width_bits=msg_width_bits)
+    ciphertext = c1, c2 + p_m
     return ciphertext
 
 
-def elgamal_decrypt(recipient_privkey, ciphertext, msg_width_bits):
-    (C1, C2) = ciphertext
-    Cp = C1 * recipient_privkey.scalar
-    P_m = C2 + (-Cp)
-    int_message = int(P_m.x) & ((1 << msg_width_bits) - 1)
-    msg = int.to_bytes(int_message, byteorder='little',
-                       length=(msg_width_bits + 7) // 8)
+def elgamal_decrypt(recipient_private_key, ciphertext, msg_width_bits):
+    c1, c2 = ciphertext
+    cp = c1 * recipient_private_key.scalar
+    p_m = c2 + (-cp)
+    int_message = int(p_m.x) & ((1 << msg_width_bits) - 1)
+    msg = int.to_bytes(
+        int_message, byteorder='little', length=(msg_width_bits + 7) // 8
+    )
     return msg
 
 
 def main():
-    privkey = ECPrivateKey.generate(curve)
-    pubkey = privkey.pubkey
+    message = input('Введите сообщение:\n>> ').encode('utf-8')
+    msg_width_bits = len(message) * 8
 
-    message = b"foobar"
-    print("Message:", message)
-    ciphertext = elgamal_encrypt(pubkey, message, msg_width_bits=256)
-    print("Ciphertext:")
-    print("    C1 =", ciphertext[0])
-    print("    C2 =", ciphertext[1])
-    plaintext = elgamal_decrypt(privkey, ciphertext, msg_width_bits=256)
-    print("Plaintext:", plaintext)
+    private_key = ECPrivateKey.generate(SECP521R1)
+    public_key = private_key.pubkey
+    print('Сгенерированный закрытый ключ:', private_key)
+    print('Открытый ключ:', public_key)
+
+    ciphertext = elgamal_encrypt(
+        public_key, message, msg_width_bits=msg_width_bits, curve=SECP521R1
+    )
+    print('Шифротекст:')
+    print('    C1 =', ciphertext[0])
+    print('    C2 =', ciphertext[1])
+
+    plaintext = elgamal_decrypt(
+        private_key, ciphertext, msg_width_bits=msg_width_bits
+    ).decode('utf-8')
+    print('Открытый текст:', plaintext)
 
 
 if __name__ == '__main__':

@@ -1,5 +1,5 @@
-import secrets
 import random
+import secrets
 
 
 def random_prime(bits: int, tests: int = None) -> int:

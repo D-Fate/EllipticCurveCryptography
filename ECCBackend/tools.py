@@ -14,17 +14,15 @@ def int_to_bytes(value, length):
     return bytes((value >> (8 * i)) & 0xff for i in reversed(range(length)))
 
 
-def ecdsa_msgdigest_to_int(message_digest, curveorder):
-    """ Performs truncation of a message digest to the bitlength of the curve
-        order.
-    """
+def ecdsa_msg_digest_to_int(message_digest, curve_order):
+    """ Обрезает дайджест сообщения до битовой длины порядка кривой. """
     # Дайджест сообщения -> целочисленное значение
     e = bytes_to_int(message_digest)
 
     # Обрезаем хэш при необходимости
     msg_digest_bits = 8 * len(message_digest)
-    if msg_digest_bits > curveorder.bit_length():
-        shift = msg_digest_bits - curveorder.bit_length()
+    if msg_digest_bits > curve_order.bit_length():
+        shift = msg_digest_bits - curve_order.bit_length()
         e >>= shift
 
     return e

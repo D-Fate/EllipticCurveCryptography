@@ -22,8 +22,8 @@ class ECDSAExploitReusedNonce(object):
         dig2.update(msg2)
         dig2 = dig2.digest()
 
-        e1 = tools.ecdsa_msgdigest_to_int(dig1, self.point.curve.order)
-        e2 = tools.ecdsa_msgdigest_to_int(dig2, self.point.curve.order)
+        e1 = tools.ecdsa_msg_digest_to_int(dig1, self.point.curve.order)
+        e2 = tools.ecdsa_msg_digest_to_int(dig2, self.point.curve.order)
 
         e1 = FieldElement(e1, self.point.curve.order)
         e2 = FieldElement(e2, self.point.curve.order)
@@ -47,7 +47,7 @@ class ECDSAVerify(object):
         assert (0 < signature.s < self.curve.order)
 
         # Дайджест сообщения -> целочисленное значение
-        e = tools.ecdsa_msgdigest_to_int(message_digest, self.curve.order)
+        e = tools.ecdsa_msg_digest_to_int(message_digest, self.curve.order)
 
         r, s = (signature.r, FieldElement(signature.s, self.curve.order))
         w = s.inverse()

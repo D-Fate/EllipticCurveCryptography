@@ -15,4 +15,4 @@ class ECPublicKey(ECDSAVerify, ECDSAExploitReusedNonce, ECIESEncrypt):
         return self._point
 
     def __str__(self):
-        return 'PublicKey<%s>' % str(self.point)
+        return str(self.point)

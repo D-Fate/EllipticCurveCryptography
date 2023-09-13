@@ -6,6 +6,7 @@ SECP521R1 = get_curve('secp521r1')
 
 
 def modify(msg: bytes) -> bytes:
+    """ Изменяет случайный байт сообщения """
     msg_array = bytearray(msg)
     msg_array[randint(0, len(msg_array) - 1)] = randint(0, 255)
     return bytes(msg_array)

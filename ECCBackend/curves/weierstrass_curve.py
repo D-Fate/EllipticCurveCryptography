@@ -34,7 +34,7 @@ class WeierstrassCurve(EllipticCurve):
         """ True, если кривая "аномальная" (то есть, #F(p) == p), иначе False.
             Такие кривые уязвимы к атаке Смарта.
         """
-        return self.j_invariant in [0, 1728]
+        return self.j_invariant in (0, 1728)
 
     @property
     def domain_params(self):

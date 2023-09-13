@@ -88,8 +88,8 @@ class FieldElement:
         return r
 
     def sqrt(self):
-        """ Returns the square root of the value or None if the value is a
-            quadratic non-residue mod p.
+        """ Возвращает квадратичный корень value либо None, если value –
+            квадратичный невычет по модулю p.
         """
         if self.is_qnr:
             return None

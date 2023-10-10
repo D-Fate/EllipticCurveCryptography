@@ -8,7 +8,7 @@ BRAINPOOLP192R1 = get_curve('brainpoolP192r1')
 
 
 def padding(msg: bytes, block_size: int) -> bytes:
-    return msg + b'\x00' * (block_size - len(msg) // block_size)
+    return msg + b'\x00' * ((-len(msg)) % block_size)
 
 
 def get_kdf(length):
